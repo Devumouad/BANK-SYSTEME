@@ -20,6 +20,8 @@ public class SignUp extends JFrame implements ActionListener{
     String first = "" + Math.abs(first4);
     SignUp(){
         super("APPLICATION FORM");
+        
+
         ImageIcon bank = new ImageIcon(ClassLoader.getSystemResource("icon/bank.png"));
         setIconImage(bank.getImage());
         Image bankInstance = bank.getImage().getScaledInstance(100,100,Image.SCALE_DEFAULT);
@@ -223,7 +225,7 @@ public class SignUp extends JFrame implements ActionListener{
                     textAdd.getText().equals("")||
                     pass1.getPassword().equals("")||
                     pass2.getPassword().equals("")||
-                    selectedCountry.equals("")
+                    selectedCountry.equals("Select Country")
 
             ){
                 JOptionPane.showMessageDialog(null,"Fill all the fields");
@@ -260,6 +262,14 @@ public class SignUp extends JFrame implements ActionListener{
 
     }
     public static void main(String[] args) {
-        new SignUp();
+        if(databaseChecker.isMySQLServerRunning()){
+            new SignUp();
+
+        }else{
+            JFrame frame = new JFrame();
+            JOptionPane.showMessageDialog(frame, "MySQL server is down. Please try again later.",
+                    "Server Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
     }
 }

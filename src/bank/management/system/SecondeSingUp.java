@@ -171,7 +171,15 @@ public class SecondeSingUp extends JFrame implements ActionListener {
     }
 
     public static void main(String[] args) {
-        new SecondeSingUp(formno);
+        if(databaseChecker.isMySQLServerRunning()){
+            new SecondeSingUp(formno);
+
+        }else{
+            JFrame frame = new JFrame();
+            JOptionPane.showMessageDialog(frame, "MySQL server is down. Please try again later.",
+                    "Server Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
     }
 
     @Override

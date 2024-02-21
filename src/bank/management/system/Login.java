@@ -4,6 +4,10 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Login extends JFrame implements ActionListener {
     JLabel labelBank ,labelCard ,label3;
@@ -47,7 +51,7 @@ public class Login extends JFrame implements ActionListener {
         labelCard.setForeground(Color.white);
         labelCard.setBounds(150,190,375,30);
         add(labelCard);
-        label3 = new JLabel("PIN: ");
+        label3 = new JLabel("Password: ");
         label3.setFont(new Font("Ralway",Font.BOLD,28));
         label3.setForeground(Color.white);
         label3.setBounds(150,250,375,30);
@@ -108,22 +112,93 @@ public class Login extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         try{
-        if(e.getSource() ==button1){
+            JFrame frame = new JFrame();
 
-        } else if (e.getSource()==button2) {
-            PinTextField.setText("");
-            PasswordField.setText("");
+            if (e.getSource() == button1) {
+                String pass = PasswordField.getText();
+                String hashedPassword = PasswordHashing.hashPassword(pass);
+                String text2 = PinTextField.getText();
+                String[] valuesToCheck = {"@", "gmail", ".com"};
+                List<String> checkingValues = new ArrayList<>();
 
-        } else if (e.getSource()==button3) {
-            
-        }
+                for(String valuesck : valuesToCheck ){
+                    if (!text2.contains(valuesck)){
+                        checkingValues.add("true");
+                        }
+
+                }
+                if(checkingValues.size()>0){
+
+                    JOptionPane.showMessageDialog(frame,"email is not in the correct format ");
+
+                }else {
+                    Conn conn = new Conn();
+                    String selectQuery = "SELECT formno,password, name FROM users WHERE email = ?";
+                    PreparedStatement preparedStatement = conn.prepareStatement(selectQuery);
+                    preparedStatement.setString(1, text2);
+
+                    ResultSet resultSet = preparedStatement.executeQuery();
+
+                    // Check if the result set has any rows
+                    String id_number = "";
+                    if (resultSet.next()) {
+                        // Retrieve the values from the result set
+                        String passwordFromDB = resultSet.getString("password");
+
+                        String nameFromDB = resultSet.getString("name");
+                        id_number = resultSet.getString("formno");
+
+                        if (hashedPassword.equals(passwordFromDB)) {
+                            String alertGreen = "Login successful for user:" + text2;
+                            JOptionPane.showMessageDialog(frame, alertGreen,
+                                    "alert", JOptionPane.INFORMATION_MESSAGE);
+
+                        } else {
+                            // Passwords don't match
+                            String alertRed = "Your password is incorrect";
+                            JOptionPane.showMessageDialog(frame, alertRed,
+                                    "alert", JOptionPane.ERROR_MESSAGE);
+                        }
+                    } else {
+                        String alertGreen = "No user found with email: " + text2;
+                        JOptionPane.showMessageDialog(frame, alertGreen,
+                                "alert", JOptionPane.INFORMATION_MESSAGE);
+                    }
+
+                    // Close the resources
+                    resultSet.close();
+                    preparedStatement.close();
+
+
+                    new HomePage(id_number);
+                    setVisible(false);
+
+
+                }
+            } else if (e.getSource()==button2) {
+                PinTextField.setText("");
+                PasswordField.setText("");
+
+            } else if (e.getSource()==button3) {
+                setVisible(false);
+                new SignUp();
+            }
 
         }catch(Exception E){
 
         }
     }
+
     public static void main(String[] args) {
-       new Login();
+        if(databaseChecker.isMySQLServerRunning()){
+            new Login();
+
+        }else{
+            JFrame frame = new JFrame();
+            JOptionPane.showMessageDialog(frame, "MySQL server is down. Please try again later.",
+                    "Server Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
     }
 
 
