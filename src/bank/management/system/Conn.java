@@ -1,5 +1,6 @@
 package bank.management.system;
 
+import javax.swing.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
@@ -9,7 +10,7 @@ public class Conn {
     Connection connection;
     String userName = "root";
     String password = "";
-    Statement statement;
+    public Statement statement;
 
 
     public Conn() {
@@ -21,7 +22,15 @@ public class Conn {
         }
     }
     public static void main(String[] args) {
-        new Conn();
+        if(databaseChecker.isMySQLServerRunning()){
+            new Conn();
+
+        }else{
+            JFrame frame = new JFrame();
+            JOptionPane.showMessageDialog(frame, "MySQL server is down. Please try again later.",
+                    "Server Error", JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
     }
 
 

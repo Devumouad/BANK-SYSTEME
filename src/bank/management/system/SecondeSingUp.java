@@ -241,6 +241,8 @@ public class SecondeSingUp extends JFrame implements ActionListener {
                     String insertQuery = "INSERT INTO additionalInfo values ('"+add_Id+"','"+formb+"', '"+selectedCategory+"', '"+selectedOccupations+"'" +
                             ", '"+phoneNumber+"', '"+selectedRelegion+"', '"+selectedIncom+"','"+PathFace+"','"+PathBack+"') ";
                     conn.statement.executeUpdate(insertQuery);
+                    new HomePage(formno);
+                    setVisible(false);
 
                 }
 
