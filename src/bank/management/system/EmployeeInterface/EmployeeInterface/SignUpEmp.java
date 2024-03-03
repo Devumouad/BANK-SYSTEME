@@ -210,7 +210,7 @@ public class SignUpEmp extends JFrame implements ActionListener{
                     conn.statement.executeUpdate(insertQuery);
                     setVisible(false);
                     JOptionPane.showMessageDialog(null,"Your username is :"+username);
-                    new DashBoardEmp(userInterface);
+                    new DashBoardEmp(userInterface,selectedCountry);
 
                 }
 

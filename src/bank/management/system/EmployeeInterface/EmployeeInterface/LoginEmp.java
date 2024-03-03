@@ -113,6 +113,7 @@ public class LoginEmp extends JFrame implements ActionListener {
     }
     @Override
     public void actionPerformed(ActionEvent e) {
+
         try{
             JFrame frame = new JFrame();
 
@@ -135,16 +136,16 @@ public class LoginEmp extends JFrame implements ActionListener {
 
                 }else {
                     Conn conn = new Conn();
-                    String selectQuery = "SELECT userReference,passwordEmp, username FROM usersemp WHERE userReference = ?";
+                    String selectQuery = "SELECT userReference,passwordEmp, username,sector FROM usersemp WHERE userReference = ?";
                     PreparedStatement preparedStatement = conn.prepareStatement(selectQuery);
                     preparedStatement.setString(1, text2);
 
                     ResultSet resultSet = preparedStatement.executeQuery();
-
+                    String sectoree= null;
                     String userReference = null;
                     if (resultSet.next()) {
                         String passwordFromDB = resultSet.getString("passwordEmp");
-
+                         sectoree = resultSet.getString("sector");
                         String nameFromDB = resultSet.getString("username");
                         userReference = resultSet.getString("userReference");
 
@@ -165,12 +166,11 @@ public class LoginEmp extends JFrame implements ActionListener {
                                 "alert", JOptionPane.INFORMATION_MESSAGE);
                     }
 
-                    // Close the resources
                     resultSet.close();
                     preparedStatement.close();
 
 
-                    new DashBoardEmp(userReference);
+                    new DashBoardEmp(userReference,sectoree);
                     setVisible(false);
 
 
